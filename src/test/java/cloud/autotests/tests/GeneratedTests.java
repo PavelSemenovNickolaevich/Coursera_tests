@@ -4,6 +4,7 @@ import cloud.autotests.helpers.DriverUtils;
 import com.codeborne.selenide.Condition;
 import io.qameta.allure.Description;
 import io.qameta.allure.Flaky;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -25,6 +26,15 @@ public class GeneratedTests extends TestBase {
         });
         step("Input 'Java' in search field and find results", () -> {
             $("input[type='text']").setValue("Java").sendKeys(Keys.ENTER);
+        });
+        step("Showing  total results for java", () -> {
+            String results = $(".rc-NumberOfResultsSection").getText();
+            Assertions.assertEquals("Showing 1456 total results for \"Java\"", results);
+
+        });
+        step("First element contains 'Java' in the search results", () -> {
+            $$x("//li[@class='ais-InfiniteHits-item']")
+                    .get(0).find(".card-title").shouldHave(Condition.text("java"));
         });
     }
 
@@ -72,7 +82,7 @@ public class GeneratedTests extends TestBase {
         });
         step("Check onboarding with greetings and user name", () -> {
             String textWithGreeting = String.format("Welcome to Coursera, %s", generateName);
-            $x("//h1[@class=\"head\"]").shouldHave(Condition.text(textWithGreeting));
+            $x("//h1[@class='head']").shouldHave(Condition.text(textWithGreeting));
         });
     }
 
