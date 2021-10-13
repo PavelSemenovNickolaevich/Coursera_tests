@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class GeneratedTests extends TestBase {
+
     @Test
     @Description("Input word in search field and search")
     @DisplayName("Search Fields")
@@ -35,6 +36,35 @@ public class GeneratedTests extends TestBase {
         step("First element contains 'Java' in the search results", () -> {
             $$x("//li[@class='ais-InfiniteHits-item']")
                     .get(0).find(".card-title").shouldHave(Condition.text("java"));
+        });
+    }
+
+    @Test
+    @Description("Click the button 'Clear all' should delete all filters")
+    @DisplayName("Clear all filters")
+    void shouldClearAllFilters() {
+        step("open 'https://www.coursera.org/'", () -> {
+            open("https://www.coursera.org/");
+        });
+        step("Input 'Java' in search field and find results", () -> {
+            $("input[type='text']").setValue("Java").sendKeys(Keys.ENTER);
+        });
+        step("Filter by ...", () -> {
+           int size = $$x("//div[@class='rc-SearchFilter css-7473qq']").size();
+           for(int i = 0 ; i < size; i++) {
+               $$x("//div[@class='rc-SearchFilter css-7473qq']").get(i).click();
+               $$("input[type='checkbox']").get(0).click();
+           }
+        });
+        step("Click the button 'Clear All' ", () -> {
+            $("button[class='ais-ClearRefinements-button']").click();
+        });
+        step("Box with selected filters should disappear", () -> {
+            $("div[class='rc-CurrentAppliedFilters horizontal-box']").should(Condition.disappear);
+        });
+        step("Default first course should be - 'Java Programming and Software Engineering Fundamentals'", () -> {
+            $$x("//li[@class='ais-InfiniteHits-item']")
+                    .get(0).find(".card-title").shouldHave(Condition.text("Java Programming and Software Engineering Fundamentals"));
         });
     }
 
