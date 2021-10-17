@@ -21,7 +21,7 @@ public class GeneratedTests extends TestBase {
     @Test
     @Description("Input word in search field and search")
     @DisplayName("Search Fields")
-    void shouldSearchResults() {
+    void shouldFindResultsByFilters() {
         step("open 'https://www.coursera.org/'", () -> {
             open("https://www.coursera.org/");
         });
@@ -30,7 +30,7 @@ public class GeneratedTests extends TestBase {
         });
         step("Showing  total results for java", () -> {
             String results = $(".rc-NumberOfResultsSection").getText();
-            Assertions.assertEquals("Showing 1456 total results for \"Java\"", results);
+            Assertions.assertEquals("Showing 1455 total results for \"Java\"", results);
 
         });
         step("First element contains 'Java' in the search results", () -> {
@@ -38,6 +38,36 @@ public class GeneratedTests extends TestBase {
                     .get(0).find(".card-title").shouldHave(Condition.text("java"));
         });
     }
+
+    @Test
+    @Description("Find results by filters tags")
+    @DisplayName("Find results")
+    void shouldSearchResults() {
+        step("open 'https://www.coursera.org/'", () -> {
+            open("https://www.coursera.org/");
+        });
+        step("Input 'Java' in search field and find results", () -> {
+            $("input[type='text']").setValue("Java").sendKeys(Keys.ENTER);
+        });
+        step("Filter by ...", () -> {
+            int size = $$x("//div[@class='rc-SearchFilter css-7473qq']").size();
+            for (int i = 0; i < size; i++) {
+                $$x("//div[@class='rc-SearchFilter css-7473qq']").get(i).click();
+                $$("input[type='checkbox']").get(0).click();
+            }
+        });
+        step("List with course should contains courses with filtered tags", () -> {
+            int size = $$("li[class='ais-InfiniteHits-item']").size();
+            for (int i = 0; i < size; i++) {
+                $$(".partner-name").get(i).shouldHave(Condition.text("Beginner"));
+                $$(".partner-name").get(i).shouldHave(Condition.text("Google Cloud"));
+                $$(".pillContainer").get(i).shouldHave(Condition.text("Course"));
+            }
+        });
+    }
+
+
+
 
     @Test
     @Description("Click the button 'Clear all' should delete all filters")
